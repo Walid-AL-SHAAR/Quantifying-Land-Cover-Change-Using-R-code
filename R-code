@@ -1,0 +1,58 @@
+# Load the necessary libraries
+install.packages("raster")
+install.packages("changepoint")
+install.packages("sf")
+install.packages("terra")
+install.packages("rasterVis")
+install.packages("writexl")
+install.packages("sp")
+install.packages("FREQ")
+library(raster)
+library(sf)
+library(changepoint)
+library(terra)
+library (writexl) 
+library(rasterVis)
+library(sp)
+library(FREQ)
+#***********************************
+
+#1
+# Load the land cover maps
+landcover_1  <- raster("Reclassed_UA_2006_Bien.tif")
+landcover_2 <- raster("Reclassed_UA_2018_Bien.tif")
+
+# Get the previous land cover value for each pixel
+previous_landcover <- landcover_1[[1]]
+# Get the new land cover value for each pixel
+new_landcover <- landcover_2[[1]]
+
+value1 <- landcover_1[[1]]
+value2<- landcover_2[[1]]
+
+#2
+# Create a land cover transition matrix
+landcover_transition_matrix <- crosstab(landcover_1, landcover_2)
+# Save the land cover transition matrix as a CSV file
+write.csv(landcover_transition_matrix, "landcover_transition_matrix.csv")
+
+
+#3
+# Calculate the number of pixels gained and lost for each land cover class
+landcover_gains <- rowSums(landcover_transition_matrix) - diag(landcover_transition_matrix)
+landcover_losses <- rowSums(landcover_transition_matrix) - diag(landcover_transition_matrix)
+
+
+# Calculate the percentages of gains and losses
+landcover_gain_percentages <- landcover_gains / sum(landcover_gains)
+landcover_loss_percentages <- landcover_losses / sum(landcover_losses)
+
+
+print(landcover_gains)
+print(landcover_loss)
+print(landcover_gains_percentages)
+print(landcover_loss_percentages)
+
+
+
+
